@@ -20,5 +20,3 @@ class LoggingArgCountChecker:
                             num_subs = log_msg_node.s.count('%s')
                             if num_args != num_subs:
                                 yield node.lineno, node.col_offset, f'LAC001 {node.func.attr}() call has {num_args} arguments but {num_subs} "%s" substitutions in the log message', type(self)
-                        else:
-                            yield node.lineno, node.col_offset, f'LAC002 {node.func.attr}() call does not have a string log message', type(self)
