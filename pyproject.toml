@@ -10,7 +10,6 @@ requires-python = '>=3.8'
 
 [options]
 py_modules = 'logging_arg_count'
-install_requires = flake8
 
 [project.entry-points.'flake8.extension']
 LAC = "logging_arg_count:LoggingArgCountChecker"
