@@ -1,15 +1,16 @@
 import ast
+from typing import Iterator
 
 
 class LoggingArgCountChecker:
     name = 'flake8-logging-arg-count'
     version = '0.1.0'
 
-    def __init__(self, tree, filename):
+    def __init__(self, tree: ast.Module, filename: str) -> None:
         self.tree = tree
         self.filename = filename
 
-    def run(self):
+    def run(self) -> Iterator[tuple[int, int, str, type]]:
         for node in ast.walk(self.tree):
             if isinstance(node, ast.Call):
                 if isinstance(node.func, ast.Attribute):
