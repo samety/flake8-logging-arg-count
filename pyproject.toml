@@ -5,8 +5,8 @@ build-backend = 'setuptools.build_meta'
 [project]
 name = 'flake8-logging-arg-count'
 description = 'A flake8 plugin for detecting logging statements with mismatched argument counts'
-version='0.1.0'
-requires-python = '>=3.8'
+version='0.2.0'
+requires-python = '>=3.9'
 readme = {file = 'README.md', content-type = 'text/markdown'}
 urls = {github='https://github.com/samety/flake8-logging-arg-count'}
 keywords = [ 'flake8', 'flake8.plugin', 'flake8.extension' ] 
