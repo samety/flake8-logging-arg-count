@@ -26,7 +26,7 @@ def test_log_statement_with_more_args_than_limit() -> None:
     assert len(errors) == 1
     lineno, _, msg, _ = errors[0]
     assert lineno == 3
-    assert msg == 'LAC001 info() call has 2 arguments but 3 "%s" placeholders in the log message'
+    assert msg == 'LAC001 info() call has 2 arguments but 3 "%" placeholders in the log message'
 
 
 def test_all_log_statement_with_more_args_than_limit() -> None:
@@ -63,3 +63,33 @@ def test_not_logging_module_expect_no_error() -> None:
     checker = LoggingArgCountChecker(tree=tree, filename='fake_file.py')
     errors = list(checker.run())
     assert len(errors) == 0
+
+
+def test_log_statement_with_standard_get_logger() -> None:
+    code = """
+        import logging
+        abc = logging.getLogger()
+        abc.info("Hello, %s", "world", "and")
+    """
+    tree = ast.parse(textwrap.dedent(code))
+    checker = LoggingArgCountChecker(tree=tree, filename='fake_file.py')
+    errors = list(checker.run())
+    assert len(errors) == 1
+    lineno, _, msg, _ = errors[0]
+    assert lineno == 4
+    assert msg == 'LAC001 info() call has 2 arguments but 1 "%" placeholders in the log message'
+
+
+def test_log_statement_with_only_get_logger() -> None:
+    code = """
+        from logging import get_logger
+        abc = get_logger()
+        abc.info("Hello, %s", "world", "and")
+    """
+    tree = ast.parse(textwrap.dedent(code))
+    checker = LoggingArgCountChecker(tree=tree, filename='fake_file.py')
+    errors = list(checker.run())
+    assert len(errors) == 1
+    lineno, _, msg, _ = errors[0]
+    assert lineno == 4
+    assert msg == 'LAC001 info() call has 2 arguments but 1 "%" placeholders in the log message'
