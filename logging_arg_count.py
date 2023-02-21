@@ -52,11 +52,14 @@ class LoggingArgCountChecker:
                 func_id = getattr(node.func.value, 'id', None)
                 if func_id not in self._loggers:
                     continue
-                if node.func.attr in LOG_METHODS:
-                    log_msg_node = node.args[0]
-                    if isinstance(log_msg_node, ast.Str):
-                        num_args = len(node.args) - 1
-                        num_subs = log_msg_node.s.count('%s')
-                        if num_args != num_subs:
-                            msg = f'LAC001 {node.func.attr}() call has {num_args} arguments but {num_subs} "%s" placeholders in the log message'  # noqa: E501
-                            yield node.lineno, node.col_offset, msg, type(self)
+                if node.func.attr not in LOG_METHODS:
+                    continue
+                log_msg_node = node.args[0]
+                if isinstance(log_msg_node, ast.Str):
+                    num_subs = log_msg_node.s.count('%')
+                    num_args = len(node.args) - 1
+                    if num_args == 0:
+                        continue
+                    if num_args != num_subs:
+                        msg = f'LAC001 {node.func.attr}() call has {num_args} arguments but {num_subs} "%" placeholders in the log message'  # noqa: E501
+                        yield node.lineno, node.col_offset, msg, type(self)

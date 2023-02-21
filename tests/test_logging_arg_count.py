@@ -26,7 +26,7 @@ def test_log_statement_with_more_args_than_limit() -> None:
     assert len(errors) == 1
     lineno, _, msg, _ = errors[0]
     assert lineno == 3
-    assert msg == 'LAC001 info() call has 2 arguments but 3 "%s" placeholders in the log message'
+    assert msg == 'LAC001 info() call has 2 arguments but 3 "%" placeholders in the log message'
 
 
 def test_all_log_statement_with_more_args_than_limit() -> None:
@@ -77,7 +77,7 @@ def test_log_statement_with_standard_get_logger() -> None:
     assert len(errors) == 1
     lineno, _, msg, _ = errors[0]
     assert lineno == 4
-    assert msg == 'LAC001 info() call has 2 arguments but 1 "%s" placeholders in the log message'
+    assert msg == 'LAC001 info() call has 2 arguments but 1 "%" placeholders in the log message'
 
 
 def test_log_statement_with_only_get_logger() -> None:
@@ -92,4 +92,4 @@ def test_log_statement_with_only_get_logger() -> None:
     assert len(errors) == 1
     lineno, _, msg, _ = errors[0]
     assert lineno == 4
-    assert msg == 'LAC001 info() call has 2 arguments but 1 "%s" placeholders in the log message'
+    assert msg == 'LAC001 info() call has 2 arguments but 1 "%" placeholders in the log message'
