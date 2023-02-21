@@ -1,41 +1,48 @@
 import ast
-from typing import Iterator
+from typing import Iterator, Optional
 
 
 LOG_METHODS = ['debug', 'info', 'warning', 'warn', 'error', 'critical']
 
 
+def _optional_get_method_name(value: ast.Call) -> Optional[str]:
+    if isinstance(value.func, ast.Attribute) and isinstance(value.func.attr, str):
+        return value.func.attr.lower()
+    if isinstance(value.func, ast.Name) and isinstance(value.func.id, str):
+        return value.func.id.lower()
+    return None
+
+
+def _optional_get_logger_name(node: ast.Assign) -> Optional[str]:
+    if not isinstance(node.value, ast.Call):
+        return None
+
+    if not (get_method_name := _optional_get_method_name(node.value)):
+        return None
+
+    if 'logger' not in get_method_name:
+        return None
+
+    if len(node.targets) != 1:
+        return None
+
+    return getattr(node.targets[0], 'id', None)
+
+
 class LoggingArgCountChecker:
     name = 'flake8-logging-arg-count'
-    version = '0.2.0'
+    version = '0.3.0'
 
     def __init__(self, tree: ast.Module, filename: str) -> None:
         self.tree = tree
         self.filename = filename
-        self._loggers: list[str] = ['logging']
+        self._loggers: list[str] = ['logging', 'logger']
 
     def _process_node(self, node: ast.AST) -> None:
         if not isinstance(node, ast.Assign):
             return
 
-        if not isinstance(node.value, ast.Call):
-            return
-
-        if not isinstance(node.value.func, ast.Attribute):
-            return
-
-        module_name = getattr(node.value.func.value, 'id', None)
-        if not module_name == 'logger':
-            pass
-
-        if not node.value.func.attr == 'getLogger':
-            pass
-
-        if len(node.targets) != 1:
-            return
-
-        logger_name = getattr(node.targets[0], 'id', None)
-        if logger_name is not None:
+        if logger_name := _optional_get_logger_name(node):
             self._loggers.append(logger_name)
 
     def run(self) -> Iterator[tuple[int, int, str, type]]:
