@@ -31,7 +31,7 @@ def _optional_get_logger_name(node: ast.Assign) -> Optional[str]:
 
 class LoggingArgCountChecker:
     name = 'flake8-logging-arg-count'
-    version = '0.3.0'
+    version = '0.4.0'
 
     def __init__(self, tree: ast.Module, filename: str) -> None:
         self.tree = tree
