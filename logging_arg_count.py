@@ -31,7 +31,7 @@ def _optional_get_logger_name(node: ast.Assign) -> Optional[str]:
 
 class LoggingArgCountChecker:
     name = 'flake8-logging-arg-count'
-    version = '0.3.0'
+    version = '0.4.0'
 
     def __init__(self, tree: ast.Module, filename: str) -> None:
         self.tree = tree
@@ -55,8 +55,8 @@ class LoggingArgCountChecker:
                 if node.func.attr not in LOG_METHODS:
                     continue
                 log_msg_node = node.args[0]
-                if isinstance(log_msg_node, ast.Str):
-                    num_subs = log_msg_node.s.count('%')
+                if isinstance(log_msg_node, ast.Constant) and isinstance(log_msg_node.value, str):
+                    num_subs = log_msg_node.value.count('%')
                     num_args = len(node.args) - 1
                     if num_args == 0:
                         continue
